@@ -1,0 +1,12 @@
+version: '3.1'
+
+services:
+  user-group-api:
+    image: mongo:latest
+    container_name: user-group-api
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - 3001:27017
