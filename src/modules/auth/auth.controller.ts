@@ -43,7 +43,7 @@ export class AuthController {
           .status(HttpStatus.CONFLICT)
           .json({ message: 'This email already has a user.' });
       } else {
-        const encryptPassword = await this.authService.hash(body.password);
+        const encryptPassword = await this.usersService.hash(body.password);
         delete body.password;
         const data = {
           ...body,

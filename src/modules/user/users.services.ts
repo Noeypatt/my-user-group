@@ -1,4 +1,5 @@
 import { Model, Types } from 'mongoose';
+import * as hasha from 'hasha';
 import { Injectable, Inject } from '@nestjs/common';
 import { User } from './schema/user.schema';
 
@@ -32,5 +33,14 @@ export class UsersService {
     return this.userModel.findOne({
       username: user.username,
     });
+  }
+  async update(id: string, body): Promise<any | undefined> {
+    return this.userModel.findByIdAndUpdate({ _id: id }, body, { new: true });
+  }
+  async delete(id: string): Promise<any | undefined> {
+    return this.userModel.findByIdAndDelete({ _id: id });
+  }
+  async hash(password: string) {
+    return await hasha.async(password);
   }
 }

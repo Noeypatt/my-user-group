@@ -26,8 +26,4 @@ export class AuthService {
       access_token: this.jwtService.sign(payload),
     };
   }
-
-  async hash(password: string) {
-    return await hasha.async(password);
-  }
 }
