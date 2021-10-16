@@ -75,14 +75,4 @@ export class AuthController {
         .json({ message: error?.message });
     }
   }
-
-  @Post('/logout')
-  async logout(@Res() res) {
-    try {
-    } catch (error) {
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: error?.message });
-    }
-  }
 }
