@@ -1,7 +1,27 @@
-import { Model, ObjectId } from 'mongoose';
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { UsersService } from '../user/users.services';
 
 @Injectable()
 export class AuthService {
-  constructor() {}
+  constructor(
+    private readonly usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
+  async validateUser(username: string, pass: string): Promise<any> {
+    const user = await this.usersService.findUser({ username: username });
+
+    if (user && user.password === pass) {
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
+  }
+
+  async login(user: any) {
+    const payload = { username: user.username, sub: user._id };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
 }

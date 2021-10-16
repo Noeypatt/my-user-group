@@ -6,9 +6,12 @@ import {
   Param,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../../guard/jwt-auth.guard';
 import { UsersService } from './users.services';
 
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -26,9 +29,9 @@ export class UsersController {
   }
 
   @Get(':id')
-  async findOneUser(@Res() res, @Param('id') id) {
+  async findByUserID(@Res() res, @Param('id') id) {
     try {
-      const result = await this.usersService.findOne(id);
+      const result = await this.usersService.findByUserID(id);
       if (result) {
         return res.status(HttpStatus.OK).json({ data: result });
       }

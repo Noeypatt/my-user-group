@@ -1,4 +1,4 @@
-import { Model, Mongoose, ObjectId, Schema, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Injectable, Inject } from '@nestjs/common';
 import { User } from './schema/user.schema';
 
@@ -18,11 +18,19 @@ export class UsersService {
       .aggregate([{ $project: { username: 1, email: 1 } }])
       .exec();
   }
-  async findOne(id: string): Promise<any | undefined> {
+  async findByUserID(id: string): Promise<any | undefined> {
     return this.userModel.aggregate([
-      { $match: { _id: Types.ObjectId(id) } },
+      { $match: { _id: new Types.ObjectId(id) } },
       { $project: { username: 1, email: 1 } },
       { $limit: 1 },
     ]);
+  }
+  async findUser(user: {
+    email?: string;
+    username?: string;
+  }): Promise<any | undefined> {
+    return this.userModel.findOne({
+      username: user.username,
+    });
   }
 }
