@@ -5,11 +5,9 @@ import {
   Post,
   Request,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from '../user/users.services';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from '../../guard/local-auth.guard';
 
 @Controller()
 export class AuthController {
@@ -63,11 +61,32 @@ export class AuthController {
     }
   }
 
-  @UseGuards(LocalAuthGuard)
   @Post('/login')
   async login(@Res() res, @Request() req) {
     try {
-      const result = await this.authService.login(req.user);
+      const user = await this.usersService.findUser({
+        username: req.body.username,
+      });
+
+      if (!user) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: 'user not found.' });
+      }
+
+      const comparePassword = await this.authService.comparePassword(
+        req.body.password,
+        user.password,
+      );
+
+      if (!comparePassword) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: 'password wrong.' });
+      }
+
+      const result = await this.authService.jwtSignToken(user);
+
       return res.status(HttpStatus.OK).json(result);
     } catch (error) {
       return res

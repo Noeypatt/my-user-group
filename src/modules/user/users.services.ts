@@ -30,9 +30,12 @@ export class UsersService {
     email?: string;
     username?: string;
   }): Promise<any | undefined> {
-    return this.userModel.findOne({
-      username: user.username,
-    });
+    return this.userModel
+      .findOne({
+        username: user.username,
+      })
+      .select(['-createdAt', '-updatedAt'])
+      .exec();
   }
   async update(id: string, body): Promise<any | undefined> {
     return this.userModel.findByIdAndUpdate({ _id: id }, body, { new: true });
